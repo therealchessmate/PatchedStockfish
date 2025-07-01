@@ -48,11 +48,6 @@
 
 namespace Stockfish::Eval::NNUE {
 
-using BiasType       = std::int16_t;
-using WeightType     = std::int16_t;
-using PSQTWeightType = std::int32_t;
-using IndexType      = std::uint32_t;
-
 // Version of the evaluation file
 constexpr std::uint32_t Version = 0x7AF32F20u;
 
@@ -283,6 +278,11 @@ inline void write_leb_128(std::ostream& stream, const IntType* values, std::size
 
     flush();
 }
+
+enum IncUpdateDirection {
+    FORWARD,
+    BACKWARDS
+};
 
 }  // namespace Stockfish::Eval::NNUE
 

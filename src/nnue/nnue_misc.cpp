@@ -121,6 +121,7 @@ trace(Position& pos, const Eval::NNUE::Networks& networks, Eval::NNUE::Accumulat
     };
 
     AccumulatorStack accumulators;
+    accumulators.reset(pos, networks, caches);
 
     // We estimate the value of each piece by doing a differential evaluation from
     // the current base eval, simulating the removal of the piece from its square.
@@ -139,7 +140,7 @@ trace(Position& pos, const Eval::NNUE::Networks& networks, Eval::NNUE::Accumulat
             {
                 pos.remove_piece(sq);
 
-                accumulators.reset();
+                accumulators.reset(pos, networks, caches);
                 std::tie(psqt, positional) = networks.big.evaluate(pos, accumulators, &caches.big);
                 Value eval                 = psqt + positional;
                 eval                       = pos.side_to_move() == WHITE ? eval : -eval;
@@ -156,7 +157,7 @@ trace(Position& pos, const Eval::NNUE::Networks& networks, Eval::NNUE::Accumulat
         ss << board[row] << '\n';
     ss << '\n';
 
-    accumulators.reset();
+    accumulators.reset(pos, networks, caches);
     auto t = networks.big.trace_evaluate(pos, accumulators, &caches.big);
 
     ss << " NNUE network contributions "

@@ -52,6 +52,7 @@ void memory_deleter(T* ptr, FREE_FUNC free_func) {
         ptr->~T();
 
     free_func(ptr);
+    return;
 }
 
 // Frees memory which was placed there with placement new.

@@ -23,7 +23,7 @@
 #include "../../bitboard.h"
 #include "../../position.h"
 #include "../../types.h"
-#include "../nnue_common.h"
+#include "../nnue_accumulator.h"
 
 namespace Stockfish::Eval::NNUE::Features {
 
@@ -58,15 +58,13 @@ void HalfKAv2_hm::append_changed_indices(Square            ksq,
                                          const DirtyPiece& dp,
                                          IndexList&        removed,
                                          IndexList&        added) {
-    removed.push_back(make_index<Perspective>(dp.from, dp.pc, ksq));
-    if (dp.to != SQ_NONE)
-        added.push_back(make_index<Perspective>(dp.to, dp.pc, ksq));
-
-    if (dp.remove_sq != SQ_NONE)
-        removed.push_back(make_index<Perspective>(dp.remove_sq, dp.remove_pc, ksq));
-
-    if (dp.add_sq != SQ_NONE)
-        added.push_back(make_index<Perspective>(dp.add_sq, dp.add_pc, ksq));
+    for (int i = 0; i < dp.dirty_num; ++i)
+    {
+        if (dp.from[i] != SQ_NONE)
+            removed.push_back(make_index<Perspective>(dp.from[i], dp.piece[i], ksq));
+        if (dp.to[i] != SQ_NONE)
+            added.push_back(make_index<Perspective>(dp.to[i], dp.piece[i], ksq));
+    }
 }
 
 // Explicit template instantiations
@@ -80,7 +78,7 @@ template void HalfKAv2_hm::append_changed_indices<BLACK>(Square            ksq,
                                                          IndexList&        added);
 
 bool HalfKAv2_hm::requires_refresh(const DirtyPiece& dirtyPiece, Color perspective) {
-    return dirtyPiece.pc == make_piece(perspective, KING);
+    return dirtyPiece.piece[0] == make_piece(perspective, KING);
 }
 
 }  // namespace Stockfish::Eval::NNUE::Features

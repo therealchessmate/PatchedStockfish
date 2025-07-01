@@ -32,7 +32,6 @@
 #include "../types.h"
 #include "nnue_accumulator.h"
 #include "nnue_architecture.h"
-#include "nnue_common.h"
 #include "nnue_feature_transformer.h"
 #include "nnue_misc.h"
 
@@ -111,11 +110,13 @@ class Network {
 };
 
 // Definitions of the network types
-using SmallFeatureTransformer = FeatureTransformer<TransformedFeatureDimensionsSmall>;
+using SmallFeatureTransformer =
+  FeatureTransformer<TransformedFeatureDimensionsSmall, &AccumulatorState::accumulatorSmall>;
 using SmallNetworkArchitecture =
   NetworkArchitecture<TransformedFeatureDimensionsSmall, L2Small, L3Small>;
 
-using BigFeatureTransformer  = FeatureTransformer<TransformedFeatureDimensionsBig>;
+using BigFeatureTransformer =
+  FeatureTransformer<TransformedFeatureDimensionsBig, &AccumulatorState::accumulatorBig>;
 using BigNetworkArchitecture = NetworkArchitecture<TransformedFeatureDimensionsBig, L2Big, L3Big>;
 
 using NetworkBig   = Network<BigNetworkArchitecture, BigFeatureTransformer>;
